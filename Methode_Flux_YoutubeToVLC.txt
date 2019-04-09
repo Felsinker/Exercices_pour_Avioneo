@@ -1,0 +1,13 @@
+La methode utilisee pour creer un flux streaming des videos Youtube pour VLC est assez simple
+	Etape 1 : Ouvrir VLC
+	Etape 2 : Aller dans la section Media/Ouvrir un flux reseau
+	Etape 3 : Copier-coller l'adresse de la video correspondante dans le champs
+	Etape 4 : Mettre en file d'attente (Alt+E)
+	Etape 5 : Recommencer autant de fois les etapes 3 et 4 qu'il y a de videos
+	Etape 6 : Puis Media/Enregistrer la liste de lecture...
+
+Il existe plusieurs formats : le .m3u, le .m3u8 et le .xspf
+Ces formats sont des formats de playlists, j'ai personnellement choisi d'enregistrer en .xspf car ce format est en langage XML et plus detaille au niveau des
+donnees sauvgardees, par rapport au deux autres formats. Ce fichier permet donc de stocker les URLs des videos ainsi que les titres, le createur... La simple ouverture
+et lecture de ce fichier permet de visionner les videos de la chaine Youtube d'Avioneo, il est donc simple d'utilisation. L'inconvenient de cette methode est que le processus
+de creation du fichier risques d'etre tres long s'il y a de nombreuses videos.

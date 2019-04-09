@@ -1,0 +1,102 @@
+<!-- Deuxième version du player de vidéo aléatoire, en utilisant l'API de Youtube
+Dynamique, on utilise l'ID de la chaine Youtube pour récupérer les vidéos, ce qui fait que dès 
+qu'une vidéo est postée sur la chaine elle automatiquement pris en charge par le player, sans avoir à l'entrer dans le programme.
+Suggestion : Afin de limiter le nombre de vidéos ou bien de cibler certaines vidéos en particulier, il faudrait alors créer une playlist sur la chaine Youtube. On utiliserait alors l'ID de cette playlist, au lieu de celui de la chaine, dans le script, et donc le player ne diffuserait que les vidéos de cette playlist
+De plus, l'aléatoire est géré et ne nécessite pas de rechargement de la page pour lire la vidéo suivante -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Player Youtube de vidéos de la chaine Avionéo en mode aléatoire (avec API Youtube)</title>
+</head>
+    
+<body>
+
+    <div id="player"></div> <!-- Balise div où l'on crée l'iframe -->
+      
+
+    <script>
+        
+        //Variable correspondante à l'ID de la chaine Youtube d'Avionéo
+        var playlistId = "UU8fc5Mre2SvO9i6wRF_NqmQ";
+        
+        
+        //Chargement de l'API Iframe de Youtube
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+          
+        var player;
+        
+        //Creation de l'élément <iframe> et du player Youtube
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '360', //Set la hauteur
+                width: '640', //Set la largeur
+                playerVars: {
+                    autoplay: 1, //lance auto la vidéo (facultatif)
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+
+        
+        var playlistArray; //Tableau recueillant la playlist de vidéos
+        var playListArrayLength; //La taille de la playlist
+        var maxNumber; //Borne max pour effectuer le random 
+        var randomNumber = 0; //Variable du nb random
+        var oldRandomNumber = 0; //Variable recueillant le nb random précédent
+
+        //Fonction qui permet d'établir un nb random
+        function newRandomNumber() {
+            oldRandomNumber = randomNumber;
+            randomNumber = Math.floor(Math.random() * maxNumber); //Effectue un random entre 0 et maxNumber
+            
+            if (oldRandomNumber == randomNumber){
+                newRandomNumber();
+                //On compare oldRandomNumber et randomNumber, si les deux sont égaux, on recommence le random 
+                //Pour éviter d'avoir 2 fois même nb à la suite et donc éviter d'avoir 2 fois la même vidéo à la suite)
+            }
+                return randomNumber; //On retourne le random
+        }
+
+        //Fonction qui permet de charger la playlist de vidéo
+        function onPlayerReady(event) {
+            player.loadPlaylist({
+                'list': playlistId, //Set la liste de vidéos à jouer(ici avec  l'ID de la chaine Youtube)
+                'listType': 'videoseries', //Set le type de playlist
+            });
+        }
+
+        
+        var firstLoad = true; //Variable qui permet de déterminer si c'est la première vidéo qui est lue
+        
+        function onPlayerStateChange(event) {
+
+            if (event.data == YT.PlayerState.ENDED) {
+                //Quand la vidéo est terminée, lecture d'une suivante à la place newRandomNumber() dans la liste de vidéos
+                player.playVideoAt(newRandomNumber());
+                
+            }
+            else {
+                if (firstLoad && event.data == YT.PlayerState.PLAYING) {
+                    firstLoad = false; //On set firstLoad à FALSE pour dire que ce n'est plus la première vidéo
+                    playlistArray = player.getPlaylist(); //On récupère la liste de vidéos
+                    playListArrayLength = playlistArray.length; //On récupère la valeur de la taille de la liste de vidéos
+                    maxNumber = playListArrayLength; //Set la valeur max pour le random avaec la taille de la liste de vidéos
+                    player.playVideoAt(newRandomNumber()); //On lit la vidéo à la place newRandomNumber() dans la liste de vidéo
+
+                    /* Pas d'utilisation de la fonction setShuffle() pour lire la playlist aléatoirement car cette fonction avait un comportement étrange et ne faisait pas l'effet escompté. */
+                }
+            }
+        }
+        
+    </script>
+</body>
+</html>

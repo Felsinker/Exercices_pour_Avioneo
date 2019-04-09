@@ -1,0 +1,35 @@
+<!-- Première version du player de vidéos aléatoire :
+Non dynamique car les adresses de chaque vidéos sont écrites en "dur", il est donc
+obligatoire de rajouter l'adresse à chaque fois que l'on veut intégrer une nouvelle vidéo à la playlist
+De plus, bien que la notion d'aléatoire soit présente, la page doit obligatoirement être rechargée pour la pouvoir lire une nouvelle vidéo, ce qui n'est pas pratique pour l'utilisateur -->
+
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Player Youtube de vidéos de la chaine Avionéo en mode aléatoire (from scratch)</title>
+    
+</head>
+
+<body>
+    
+    <iframe id="random_player" src="" width="" height="" ></iframe>
+    <script>
+        
+        //Tableau regroupant les différentes adresses des vidéos
+        var videos =["https://www.youtube.com/embed/Hmm2Va_Urdc", "https://www.youtube.com/embed/O9T3nFLNK2c", "https://www.youtube.com/embed/FdfvFnMN_tI", "https://www.youtube.com/embed/ffGNnIVTphQ", "https://www.youtube.com/embed/VxjgAsvX1Pk", "https://www.youtube.com/embed/T0008zM0oME", "https://www.youtube.com/embed/1GOayAUt_JQ" ];
+        
+        
+         window.onload = function() {
+            var playerDiv = document.getElementById("random_player"); //récupère l'iframe
+            var randomVideoUrl = videos[Math.floor(Math.random() * videos.length)]; //Choisi aléatoirement l'adresse de la vidéo
+            playerDiv.setAttribute('width', '640'); //Set la longueur de l'iframe
+            playerDiv.setAttribute('height', '390'); //Set la hauteur de l'iframe
+            playerDiv.setAttribute('src', randomVideoUrl); //Set la source de l'iframe selon l'adresse choisi aléatoirement dans le tableau
+        };
+ 
+    </script>
+</body>
+
+</html>
